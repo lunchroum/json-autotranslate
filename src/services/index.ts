@@ -2,7 +2,6 @@ import { GoogleTranslate } from './google-translate';
 import { DeepL } from './deepl';
 import { DryRun } from './dry-run';
 import { AzureTranslator } from './azure-translator';
-import { ManualTranslation } from './manual';
 import type { Matcher } from '../matchers';
 import { AmazonTranslate } from './amazon-translate';
 
@@ -42,7 +41,6 @@ export const serviceMap: {
   'deepl-free': new DeepL(true),
   'dry-run': new DryRun(),
   azure: new AzureTranslator(),
-  manual: new ManualTranslation(),
   'amazon-translate': new AmazonTranslate(),
 };
 
