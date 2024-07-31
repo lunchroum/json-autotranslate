@@ -1,13 +1,13 @@
 import { decode } from 'html-entities';
 import fetch from 'node-fetch';
-import * as path from 'path';
-import * as fs from 'fs';
+import * as path from 'node:path';
+import * as fs from 'node:fs';
 
-import { TranslationService, TranslationResult, DeepLGlossary } from '.';
+import type { TranslationService, TranslationResult, DeepLGlossary } from '.';
 import {
   replaceInterpolations,
   reInsertInterpolations,
-  Matcher,
+  type Matcher,
 } from '../matchers';
 
 export class DeepL implements TranslationService {
@@ -20,7 +20,7 @@ export class DeepL implements TranslationService {
   /**
    * Number to tokens to translate at once
    */
-  private batchSize: number = 1000;
+  private batchSize = 1000;
   private supportedLanguages: Set<string>;
   private formalityLanguages: Set<string>;
   private interpolationMatcher: Matcher;
@@ -56,7 +56,7 @@ export class DeepL implements TranslationService {
     this.apiKey = apiKey;
     this.formality =
       formality === 'less' || formality === 'more' ? formality : 'default';
-    this.batchSize = isNaN(parseInt(batchSize)) ? 1000 : parseInt(batchSize);
+    this.batchSize = Number.isNaN(Number.parseInt(batchSize)) ? 1000 : Number.parseInt(batchSize);
     this.interpolationMatcher = interpolationMatcher;
     const languages = await this.fetchLanguages();
     this.supportedLanguages = this.formatLanguages(languages);
@@ -262,7 +262,7 @@ export class DeepL implements TranslationService {
     strings: { key: string; value: string }[],
     from: string,
     to: string,
-    triesLeft: number = 5,
+    triesLeft = 5,
   ): Promise<TranslationResult[]> {
     const cleaned = strings.map((s) =>
       replaceInterpolations(s.value, this.interpolationMatcher),
@@ -286,18 +286,18 @@ export class DeepL implements TranslationService {
       const glossary = await this.getGlossary(from, to);
       if (glossary) {
         // Add it to the options body:
-        body['glossary_id'] = glossary.glossary_id;
+        body.glossary_id = glossary.glossary_id;
       }
     }
 
     if (this.supportsFormality(to)) {
       // only append formality to avoid bad request error from deepl for languages with unsupported formality
-      body['formality'] = this.formality;
+      body.formality = this.formality;
     }
 
     if (this.context) {
       // context is only added if it has been provided by as a command line argument
-      body['context'] = this.context;
+      body.context = this.context;
     }
 
     // send request as a POST request, with all the tokens as separate texts in the body

@@ -1,10 +1,11 @@
 import fetch from 'node-fetch';
-import { chunk, flatten } from 'lodash';
+import chunk from 'lodash/chunk';
+import flatten from 'lodash/flatten';
 import { decode } from 'html-entities';
 
-import { TranslationService, TranslationResult, TString } from '.';
+import type { TranslationService, TranslationResult, TString } from '.';
 import {
-  Matcher,
+  type Matcher,
   reInsertInterpolations,
   replaceInterpolations,
 } from '../matchers';
@@ -47,7 +48,7 @@ export class AzureTranslator implements TranslationService {
     decodeEscapes?: boolean,
   ) {
     const [apiKey, region] = config.split(',');
-    if (!apiKey) throw new Error(`Please provide an API key for Azure.`);
+    if (!apiKey) throw new Error("Please provide an API key for Azure.");
 
     this.apiKey = apiKey;
     this.region = region;
@@ -102,7 +103,7 @@ export class AzureTranslator implements TranslationService {
     );
 
     if (!response.ok) {
-      throw new Error('Azure Translation failed: ' + (await response.text()));
+      throw new Error(`Azure Translation failed: ${await response.text()}`);
     }
 
     const data = (await response.json()) as TranslationResponse[];
