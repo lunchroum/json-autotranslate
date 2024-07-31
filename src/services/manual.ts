@@ -39,6 +39,7 @@ export class ManualTranslation implements TranslationService {
       );
       process.stdout.write('│ ├── ');
 
+      // @ts-ignore
       const result = await inquirer.prompt<{ result: string }>([
         {
           name: 'result',
@@ -51,6 +52,7 @@ export class ManualTranslation implements TranslationService {
       results.push({
         key,
         value,
+        // @ts-ignore
         translated: reInsertInterpolations(result.result, replacements),
       });
     }

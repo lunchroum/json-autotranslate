@@ -286,17 +286,20 @@ export class DeepL implements TranslationService {
       const glossary = await this.getGlossary(from, to);
       if (glossary) {
         // Add it to the options body:
+        // @ts-ignore
         body.glossary_id = glossary.glossary_id;
       }
     }
 
     if (this.supportsFormality(to)) {
       // only append formality to avoid bad request error from deepl for languages with unsupported formality
+      // @ts-ignore
       body.formality = this.formality;
     }
 
     if (this.context) {
       // context is only added if it has been provided by as a command line argument
+      // @ts-ignore
       body.context = this.context;
     }
 

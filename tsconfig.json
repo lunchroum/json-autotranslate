@@ -8,7 +8,15 @@
     "outDir": "./lib",
     "strict": false,
     "noImplicitAny": false,
-    "target": "ESNext"
+    "target": "ESNext",
+    "skipLibCheck": true,
+    "types": []
   },
-  "files": ["src/index.ts"]
+  "files": ["src/index.ts"],
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts",
+  ]
 }
