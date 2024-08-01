@@ -87,6 +87,10 @@ commander
 		`deletes strings in translation files that don't exist in the template`,
 	)
 	.option(
+		"-o, --overwrite-output-file",
+		"outputs single translated file for each targetLanguage or overwrites the existing file",
+	)
+	.option(
 		"--directory-structure <default|ngx-translate>",
 		"the locale directory structure",
 	)
@@ -101,6 +105,7 @@ const translate = async (
 	cacheDir = ".json-autotranslate-cache",
 	sourceLang = "en",
 	deleteUnusedStrings = false,
+	overwriteOutputFile = false,
 	fileType: FileType = "auto",
 	withArrays = false,
 	dirStructure: DirectoryStructure = "default",
@@ -297,6 +302,7 @@ const translate = async (
 			dirStructure,
 			deleteUnusedStrings,
 			withArrays,
+			overwriteOutputFile,
 		);
 
 		switch (dirStructure) {
@@ -417,6 +423,7 @@ translate(
 	commander.cache,
 	commander.sourceLanguage,
 	commander.deleteUnusedStrings,
+	commander.overwriteOutputFile,
 	commander.type,
 	commander.withArrays,
 	commander.directoryStructure,
@@ -447,6 +454,7 @@ function createTranslator(
 	dirStructure: DirectoryStructure,
 	deleteUnusedStrings: boolean,
 	withArrays: boolean,
+	overwriteOutputFile: boolean,
 ) {
 	return async (
 		sourceFile: TranslatableFile,
@@ -514,10 +522,16 @@ function createTranslator(
 				2,
 			)}\n`;
 
+			let outputFileName: string = null;
+
+			if (overwriteOutputFile) {
+				outputFileName = `${targetLang}.json`;
+			}
+
 			fs.writeFileSync(
 				path.resolve(
 					evaluateFilePath(workingDir, dirStructure, targetLang),
-					destinationFile?.name ?? sourceFile.name,
+					outputFileName ?? destinationFile?.name ?? sourceFile.name,
 				),
 				newContent,
 			);
@@ -533,7 +547,7 @@ function createTranslator(
 			fs.writeFileSync(
 				path.resolve(
 					languageCachePath,
-					destinationFile?.name ?? sourceFile.name,
+					outputFileName ?? destinationFile?.name ?? sourceFile.name,
 				),
 				`${JSON.stringify(translatedFile, null, 2)}\n`,
 			);

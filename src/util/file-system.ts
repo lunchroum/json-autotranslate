@@ -1,6 +1,6 @@
 import { flatten } from 'flat';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 export type FileType = 'key-based' | 'natural' | 'auto';
 
@@ -33,7 +33,7 @@ export const getAvailableLanguages = (
   }
 };
 
-export const detectFileType = (json: any): FileType => {
+export const detectFileType = (json: unknown): FileType => {
   const invalidKeys = Object.keys(json).filter(
     (k) => typeof json[k] === 'string' && (k.includes('.') || k.includes(' ')),
   );
